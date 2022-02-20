@@ -1,47 +1,5 @@
 import { Schema, model } from 'mongoose';
 
-const CaseSchema = new Schema ({
-    new: {
-        type: String || null
-    },
-    active: {
-        type: Number
-    },
-    critical: {
-        type: Number
-    },
-    recovered: {
-        type: Number
-    },
-    '1M_pop': {
-        type: String || null
-    },
-    total: {
-        type: Number
-    }
-});
-
-const DeathSchema = new Schema ({
-    new: {
-        type: String || null
-    },
-    '1M_pop': {
-        type: String || null
-    },
-    total: {
-        type: Number
-    }
-});
-
-const TestSchema = new Schema ( {
-    '1M_pop': {
-        type: String || null
-    },
-    total: {
-        type: Number
-    }
-});
-
 const StatisticSchema = new Schema({
     continent: {
         type: String || null,
@@ -53,13 +11,43 @@ const StatisticSchema = new Schema({
         type: Number,
     },
     cases: {
-        type: CaseSchema
+        new: {
+            type: String || null
+        },
+        active: {
+            type: Number
+        },
+        critical: {
+            type: Number
+        },
+        recovered: {
+            type: Number
+        },
+        '1M_pop': {
+            type: String || null
+        },
+        total: {
+            type: Number
+        }
     },
     deaths: {
-        type: DeathSchema
+        new: {
+            type: String || null
+        },
+        '1M_pop': {
+            type: String || null
+        },
+        total: {
+            type: Number
+        }
     },
     tests: {
-        type: TestSchema
+        '1M_pop': {
+            type: String || null
+        },
+        total: {
+            type: Number
+        }
     },
     day: {
         type: Date
