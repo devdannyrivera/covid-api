@@ -10,7 +10,7 @@ class Server {
     private port: string;
     private paths = {
         auth: '/api/auth'
-    }
+    };
     private mongoDb: MongoDb;
 
     constructor() {
@@ -19,14 +19,14 @@ class Server {
         this.mongoDb = new MongoDb();
 
         this.mongoDb.connect();
-        
+
         this.middlewares();
 
         this.routes();
     }
 
     middlewares() {
-        
+
         // CORS
         this.app.use(cors({}));
 
@@ -35,13 +35,13 @@ class Server {
     }
 
     routes() {
-        this.app.use(this.paths.auth, authRoutes )
+        this.app.use(this.paths.auth, authRoutes );
     }
 
     listen() {
         this.app.listen(this.port, () => {
             console.log(`Server runnig on http://localhost:${this.port}/`);
-        })
+        });
     }
 }
 
