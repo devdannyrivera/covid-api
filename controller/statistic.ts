@@ -46,3 +46,31 @@ export const getByCountry = async (req: Request, res: Response) => {
     }
 
 };
+
+export const mutateCountryStatistic = async (req: Request, res: Response) => {
+
+    try {
+        const { id } = req.params;
+        const { deaths, cases, tests } = req.body;
+
+        const data = await statistic.findByIdAndUpdate(id, {deaths, cases, tests}, {new: true});
+
+        if(!data) {
+            res.status(404).json({
+                msg: 'That country statistic does not exist'
+            });
+        }
+
+        res.status(200).json({
+            result: data
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            msg: 'Something went wrong'
+        });
+
+    }
+
+};
