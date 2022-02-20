@@ -2,6 +2,7 @@ import express, { Application } from 'express';
 import cors from 'cors';
 
 import authRoutes from '../routes/auth';
+import syncRoutes from '../routes/sync';
 import MongoDb from '../db/config';
 
 class Server {
@@ -9,7 +10,8 @@ class Server {
     private app: Application;
     private port: string;
     private paths = {
-        auth: '/api/auth'
+        auth: '/api/auth',
+        sync: '/api/sync'
     };
     private mongoDb: MongoDb;
 
@@ -36,6 +38,7 @@ class Server {
 
     routes() {
         this.app.use(this.paths.auth, authRoutes );
+        this.app.use(this.paths.sync, syncRoutes );
     }
 
     listen() {
