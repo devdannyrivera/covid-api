@@ -5,10 +5,25 @@ export const get = async (req: Request, res: Response) => {
 
     try {
 
-        const statistics = await statistic.find().sort({country: 1});
+        const { query } = req;
+
+        const size = parseInt(query!.size as string || '20', undefined);
+        const page = parseInt(query!.page as string || '1', undefined);
+
+        if(isNaN(size) || isNaN(page)) {
+            return res.status(400).json({
+                msg: 'Pagination params are not correct'
+            });
+        }
+
+        const [total, statistics] = await Promise.all([
+            statistic.countDocuments(),
+            statistic.find().sort({country: 1}).limit(size).skip((page - 1) * size),
+        ]);
 
         res.status(200).json({
-            result: statistics
+            total,
+            statistics
         });
 
     } catch (error) {
@@ -28,7 +43,7 @@ export const getByCountry = async (req: Request, res: Response) => {
         const data = await statistic.findById(id);
 
         if(!data) {
-            res.status(404).json({
+            return res.status(404).json({
                 msg: 'Country statistic not found'
             });
         }
@@ -56,7 +71,7 @@ export const mutateCountryStatistic = async (req: Request, res: Response) => {
         const data = await statistic.findByIdAndUpdate(id, {deaths, cases, tests}, {new: true});
 
         if(!data) {
-            res.status(404).json({
+            return res.status(404).json({
                 msg: 'That country statistic does not exist'
             });
         }
