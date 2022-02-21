@@ -25,7 +25,7 @@ export const register = async (req: Request, res: Response) => {
 
         await user.save();
 
-        res.json({
+        res.status(201).json({
             user
         });
 
