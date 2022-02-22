@@ -9,6 +9,7 @@ export const get = async (req: Request, res: Response) => {
 
         const size = parseInt(query!.size as string || '20', undefined);
         const page = parseInt(query!.page as string || '1', undefined);
+        const country = query!.country || '';
 
         if(isNaN(size) || isNaN(page)) {
             return res.status(400).json({
@@ -18,7 +19,7 @@ export const get = async (req: Request, res: Response) => {
 
         const [total, statistics] = await Promise.all([
             statistic.countDocuments(),
-            statistic.find().sort({country: 1}).limit(size).skip((page - 1) * size),
+            statistic.find({country: {$regex: country}}).sort({country: 1}).limit(size).skip((page - 1) * size),
         ]);
 
         res.status(200).json({

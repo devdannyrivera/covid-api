@@ -5,7 +5,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
     const token = req.header('x-api-token');
 
     if(!token) {
-        res.status(401).json({
+        return res.status(401).json({
             mgs: 'x-api-token header not found'
         });
     }
