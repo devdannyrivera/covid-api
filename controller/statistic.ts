@@ -17,7 +17,7 @@ export const get = async (req: Request, res: Response) => {
             });
         }
 
-        const total = await statistic.countDocuments();
+        const total = await statistic.countDocuments().where({country: {$regex: country}});
         const statistics = await statistic.find({country: {$regex: country}}).sort({country: 1}).limit(size).skip((page - 1) * size);
 
         res.status(200).json({
