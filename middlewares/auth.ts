@@ -6,7 +6,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
 
     if(!token) {
         return res.status(401).json({
-            mgs: 'x-api-token header not found'
+            msg: 'x-api-token header not found'
         });
     }
 
@@ -17,7 +17,7 @@ export const auth = (req: Request, res: Response, next: NextFunction) => {
 
     } catch (error) {
         res.status(401).json({
-            mgs: 'Invalid Token'
+            msg: 'Invalid Token'
         });
     }
 };

@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import User from '../models/user';
+import RefreshToken from '../models/refreshToken';
 import bcrypt from 'bcryptjs';
 import validator from 'validator';
-import { generateJwt } from '../helpers/jwt';
+import { generateJwt, generateRefreshJwt, verifyRefreshTokenJwt } from '../helpers/jwt';
+import { JwtPayload } from 'jsonwebtoken';
 
 export const register = async (req: Request, res: Response) => {
 
@@ -74,10 +76,63 @@ export const login = async (req: Request, res: Response) => {
 
         // If it get to this point, it means that credentials are correct, so we generate the token
         const token = await generateJwt(userDb);
+        const refreshToken = await generateRefreshJwt(userDb);
+
+        await RefreshToken.deleteMany({userId: userDb._id});
+        const refreshTokenDb = new RefreshToken({userId: userDb._id, token: refreshToken});
+        await refreshTokenDb.save();
 
         res.json({
             user,
-            token
+            token,
+            refreshToken
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            msg: 'Something went wrong'
+        });
+
+    }
+
+};
+
+export const getRefreshedToken = async (req: Request, res: Response) => {
+
+    try {
+        const { refreshToken } = req.body;
+
+        const payload = await verifyRefreshTokenJwt(refreshToken) as JwtPayload;
+
+        if(!payload) {
+            return res.status(401).json({
+                msg: "Plese, Sigin to get a token"
+            });
+        }
+
+        const { uid }  = payload;
+        const existence = await RefreshToken.exists({refreshToken});
+
+        if(!existence) {
+            return res.status(401).json({
+                msg: "Plese, Sigin to get a token",
+            });
+        }
+
+        const user = await User.findById(uid);
+
+        if(!user) {
+            return res.status(401).json({
+                msg: "Plese, sigin to get a valid token",
+            });
+        }
+
+        const token = await generateJwt(user);
+
+        res.json({
+            token,
+            refreshToken
         });
 
     } catch (error) {

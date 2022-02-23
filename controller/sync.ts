@@ -8,9 +8,9 @@ export const sync = async (req: Request, res: Response) => {
 
         const result = await getSourceData();
 
-        statistic.collection.drop();
+        await statistic.collection.drop();
 
-        statistic.collection.insertMany(result);
+        await statistic.collection.insertMany(result);
 
         res.status(200).json({
             msg: 'Statistics Syncned Successfully'
